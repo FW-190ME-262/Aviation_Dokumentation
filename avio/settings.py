@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 # 'drf_yasg',
 INSTALLED_APPS = [
-    'django.contrib.sites',
     'rest_framework',
     'rest_framework_simplejwt',
     'django.contrib.admin',
@@ -40,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
-]
+    'main',
 
+]
+SITE_ID =1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

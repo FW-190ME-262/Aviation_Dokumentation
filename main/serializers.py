@@ -1,7 +1,8 @@
-from .models import Plane,Profile
+from .models import Plane, Profile, Comment, Rating, Tutorial, CartItem, Course, Lesson, EducationalMaterial
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Country,CityVillage,Region,District
+from .models import Profile, Country, CityVillage, Region, District
+from .models import Course, Lesson, EducationalMaterial
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -69,19 +70,56 @@ class CityVillageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# class PlaneSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Plane
+#         fields = ['name', 'photo', 'description', 'text', 'date_publications']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'text', 'user', ]
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['id', 'rating', 'user', ]
+
+
 class PlaneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plane
-        fields = ['name', 'photo', 'description', 'text', 'date_publications']
+        fields = ['id', 'name', 'photo', 'description', 'text', 'date_publications', 'plan', 'plane_type',
+                  'complexity_level', 'download_link']
 
 
-class CommentSerializer:
+class TutorialSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Plane
-        fields = ['comment']
+        model = Tutorial
+        fields = ['id', 'title', 'description', 'video_url', 'created_at']
 
 
-class RatingSerializer:
+class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Plane
-        fields = ['rating']
+        model = CartItem
+        fields = ['id', 'user', 'plane', 'quantity']
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'description', 'price', 'photo', 'date_publication']
+
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = '__all__'
+
+
+class EducationalMaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationalMaterial
+        fields = '__all__'

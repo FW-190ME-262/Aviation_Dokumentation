@@ -1,20 +1,48 @@
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer
-from .models import Country, Profile, Region, District, CityVillage  # Adjust according to your actual model names
-from .serializers import CountrySerializer, RegionSerializer, DistrictSerializer, CityVillageSerializer
-from rest_framework import generics, status
+
+from .models import Country, Region, District, CityVillage, Course, Lesson, EducationalMaterial
+
+from rest_framework import status
+from .serializers import PlaneSerializer, TutorialSerializer, RegisterSerializer, CountrySerializer, RegionSerializer, \
+    DistrictSerializer, CityVillageSerializer, CourseSerializer, LessonSerializer, EducationalMaterialSerializer, \
+    CommentSerializer, RatingSerializer
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import Plane, Comment, Rating
-from .serializers import PlaneSerializer, CommentSerializer, RatingSerializer
+
 from rest_framework import generics
-from rest_framework.response import Response
-from .models import Plane
-from .serializers import PlaneSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import Plane, Tutorial, CartItem
 
 
+# API для учебных материалов
+class TutorialListView(generics.ListAPIView):
+    queryset = Tutorial.objects.all()
+    serializer_class = TutorialSerializer
+
+
+class TutorialDetailView(generics.RetrieveAPIView):
+    queryset = Tutorial.objects.all()
+    serializer_class = TutorialSerializer
+
+
+# API для корзины
+class CartItemListView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return CartItem.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return CartItem.objects.filter(user=self.request.user)
+
+
+# Home
 class All_planeListView(generics.ListAPIView):
     queryset = Plane.objects.all().order_by('-date_publications')[:3]  # Берем 3 самых новых самолета
     serializer_class = PlaneSerializer
@@ -25,7 +53,7 @@ class PlaneListView(generics.ListAPIView):
     serializer_class = PlaneSerializer
 
 
-# View для получения деталей о самолете по ID
+# View  id
 class PlaneDetailView(generics.RetrieveAPIView):
     queryset = Plane.objects.all()
     serializer_class = PlaneSerializer
@@ -91,3 +119,56 @@ class RegisterView(APIView):
             serializer.save()
             return Response({"message": "Регистрация прошла успешно!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommenteView(APIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        plane_id = self.kwargs['plane_id']
+        plane = Plane.objects.get(id=plane_id)
+        serializer.save(plane=plane, user=self.request.user)
+
+
+class RatingView(APIView):
+    serializer_class = RatingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        plane_id = self.kwargs['plane_id']
+        plane = Plane.objects.get(id=plane_id)
+        serializer.save(plane=plane, user=self.request.user)
+
+
+class CheckoutView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        cart_items = CartItem.objects.filter(user=request.user)
+        # Логика оформления заказа (например, создание записи о заказе)
+        # Очистка корзины после оформления
+        cart_items.delete()
+        return Response({"message": "Order placed successfully!"}, status=status.HTTP_201_CREATED)
+
+
+class CourseListView(generics.ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
+class CourseDetailView(generics.RetrieveAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
+# View to get detailed information about a specific lesson
+class LessonDetailView(generics.RetrieveAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+
+
+# View to get detailed information about a specific educational material
+class EducationalMaterialDetailView(generics.RetrieveAPIView):
+    queryset = EducationalMaterial.objects.all()
+    serializer_class = EducationalMaterialSerializer
