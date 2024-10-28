@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from .models import Plane, Tutorial, CartItem
+from .models import Plane, Tutorial
 
 
 # API для учебных материалов
@@ -163,12 +163,43 @@ class CourseDetailView(generics.RetrieveAPIView):
 
 
 # View to get detailed information about a specific lesson
+import logging
+
+logger = logging.getLogger(__name__)
 class LessonDetailView(generics.RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    print(serializer_class)
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        logger.info(f"Retrieved lesson: {instance}")
+        serializer = self.get_serializer(instance)
+        logger.info(f"Serialized data: {serializer.data}")
+        return Response(serializer.data)
 
 # View to get detailed information about a specific educational material
 class EducationalMaterialDetailView(generics.RetrieveAPIView):
     queryset = EducationalMaterial.objects.all()
     serializer_class = EducationalMaterialSerializer
+
+
+
+
+
+class CheckoutView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        cart_items = CartItem.objects.filter(user=request.user)
+        total_price = sum([item.plane.price for item in cart_items])
+
+        profile = request.user.profile
+        if profile.balance >= total_price:
+            profile.balance -= total_price
+            profile.save()
+            # Удаляем все элементы корзины
+            cart_items.delete()
+            return Response({"message": "Purchase successful!", "balance": profile.balance}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error": "Insufficient balance!"}, status=status.HTTP_400_BAD_REQUEST)

@@ -41,8 +41,8 @@ class Profile(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     city_village = models.ForeignKey(CityVillage, on_delete=models.CASCADE)
     street = models.CharField(max_length=100)
-    courses = models.ManyToManyField('Course', related_name='students', blank=True,
-                                     null=True)  # Many-to-many relationship
+    courses = models.ManyToManyField('Course', related_name='students', blank=True)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=1000.00)  # Добавлено поле баланса
 
     class Meta:
         constraints = [
@@ -63,10 +63,10 @@ class Plane(models.Model):
     text = models.TextField()
     date_publications = models.DateTimeField(auto_now_add=True)
     plan = models.ImageField(upload_to='plan/')
-
-    plane_type = models.CharField(max_length=255)  # Тип самолета
-    complexity_level = models.CharField(max_length=255)  # Уровень сложности сборки
-    download_link = models.URLField()  # Ссылка на скачивание моделей
+    plane_type = models.CharField(max_length=255)
+    complexity_level = models.CharField(max_length=255)
+    download_link = models.URLField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Добавлено поле стоимости
 
 
 class Tutorial(models.Model):
@@ -76,10 +76,14 @@ class Tutorial(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    plane = models.ForeignKey(Plane, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+class Course(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    date_publication = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Comment(models.Model):
@@ -104,36 +108,21 @@ class Rating(models.Model):
         return f'Rating by {self.user.username} for {self.plane.name}: {self.score}'
 
 
-class CommentSerializer:
-    class Meta:
-        model = Plane
-        fields = ['comment']
 
 
-class RatingSerializer:
-    class Meta:
-        model = Plane
-        fields = ['rating']
 
-
-class Course(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    photo = models.ImageField(upload_to='course_photos/')
-    date_publication = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Lesson(models.Model):
-    name = models.CharField(max_length=255)
-    number_lesson = models.IntegerField()
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    content = models.TextField()
+    video_url = models.URLField()
+    date_publication = models.DateTimeField(auto_now_add=True)
+    course = models.ForeignKey('Course', related_name='lessons', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.name} - Lesson {self.number_lesson}"
+        return self.title
 
 
 class EducationalMaterial(models.Model):
@@ -147,4 +136,26 @@ class EducationalMaterial(models.Model):
         return self.name
 
 
-"переходя подробно в курс я получаю список уроков "
+"переходя подробно в курс я получаю список уроков , весь ма териал на список уроков"
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plane = models.ForeignKey(Plane, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.plane.name} in cart of {self.user.username}'
+
+
+class CommentSerializer:
+    class Meta:
+        model = Plane
+        fields = ['comment']
+
+
+class RatingSerializer:
+    class Meta:
+        model = Plane
+        fields = ['rating']

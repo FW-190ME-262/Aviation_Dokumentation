@@ -1,8 +1,9 @@
-from .models import Plane, Profile, Comment, Rating, Tutorial, CartItem, Course, Lesson, EducationalMaterial
+from .models import Plane, Comment, Rating, Tutorial
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Profile, Country, CityVillage, Region, District
 from .models import Course, Lesson, EducationalMaterial
+from .models import CartItem
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -88,13 +89,6 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = ['id', 'rating', 'user', ]
 
 
-class PlaneSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Plane
-        fields = ['id', 'name', 'photo', 'description', 'text', 'date_publications', 'plan', 'plane_type',
-                  'complexity_level', 'download_link']
-
-
 class TutorialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tutorial
@@ -107,19 +101,38 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'plane', 'quantity']
 
 
-class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = ['id', 'name', 'description', 'price', 'photo', 'date_publication']
-
-
-class LessonSerializer(serializers.ModelSerializer):
+class LessonCourseDeteilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = ['id', 'title']
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    lessons = LessonCourseDeteilSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'description', 'price', 'date_publication', "lessons"]
+
+
 
 
 class EducationalMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = EducationalMaterial
-        fields = '__all__'
+        fields = ['id', 'name', 'number_educational', 'content', 'file']
+
+class LessonSerializer(serializers.ModelSerializer):
+    materials = EducationalMaterialSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Lesson
+        fields = ['id', 'title', 'description', 'content', 'video_url', 'date_publication', 'materials']
+
+
+
+class PlaneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plane
+        fields = ['id', 'name', 'photo', 'description', 'text', 'date_publications', 'plan', 'plane_type',
+                  'complexity_level', 'download_link', 'price']  # Добавлено поле price

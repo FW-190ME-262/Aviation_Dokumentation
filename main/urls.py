@@ -17,6 +17,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('api/checkout/', CheckoutView.as_view(), name='checkout'),
 
+    path('api/checkout/', CheckoutView.as_view(), name='checkout'),
+    path('courses/', CourseListView.as_view(), name='course-list'),
+    path('courses/<int:pk>/', CourseDetailView.as_view(), name='course-detail'),
+    path('lessons/<int:pk>/', LessonDetailView.as_view(), name='lesson-detail'),
+
+
     path('courses/', CourseListView.as_view(), name='course-list'),
     path('courses/<int:pk>/', CourseDetailView.as_view(), name='course-detail'),
     path('lessons/<int:pk>/', LessonDetailView.as_view(), name='lesson-detail'),
