@@ -108,11 +108,6 @@ class Rating(models.Model):
         return f'Rating by {self.user.username} for {self.plane.name}: {self.score}'
 
 
-
-
-
-
-
 class Lesson(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -159,3 +154,6 @@ class RatingSerializer:
     class Meta:
         model = Plane
         fields = ['rating']
+
+
+'напомнить Андрею заехать в Вайлберес и спросить про платежку линки дыня  '
