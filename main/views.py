@@ -1,3 +1,6 @@
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
 from rest_framework.views import APIView
 
 from .models import Country, Region, District, CityVillage, Course, Lesson, EducationalMaterial
@@ -11,6 +14,17 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import Plane, Tutorial
+
+
+class PlaneDocumentationView(View):
+    def get(self, request, plane_id):
+        plane = get_object_or_404(Plane, id=plane_id)
+        # Получаем все связанные документы для самолета
+        documentation = plane.documentations.all()  # Используем related_name="documentations"
+        documentation_data = [
+            {"title": doc.title, "content": doc.content} for doc in documentation
+        ]
+        return JsonResponse({"plane_id": plane_id, "documentation": documentation_data})
 
 
 # API для учебных материалов
@@ -82,10 +96,6 @@ class CountryListView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
 
-
-class CountryListView(generics.ListAPIView):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
 
 
 class RegionListByCountryView(generics.ListAPIView):

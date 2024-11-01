@@ -156,4 +156,14 @@ class RatingSerializer:
         fields = ['rating']
 
 
-'напомнить Андрею заехать в Вайлберес и спросить про платежку линки дыня  '
+
+
+'напомнить Андрею заехать в Вайлберес и спросить про платежку линки дыня  ,бинарный код =>  '
+
+
+class Instruction(models.Model):
+    page = models.CharField(max_length=100)
+    text = models.TextField()
+
+    def __str__(self):
+        return f"Instruction for {self.page}"
