@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Component, CartItem, Documentation, PlanePart, SelectedParts, ReadyKit, Cart
+from .models import Component, CartItem, Documentation, PlanePart, SelectedParts, ReadyKit, Cart,Plane
 
 admin.site.register(CartItem)
 admin.site.register(Documentation)
@@ -8,3 +8,4 @@ admin.site.register(SelectedParts)
 admin.site.register(Component)
 admin.site.register(ReadyKit)
 admin.site.register(Cart)
+admin.site.register(Plane)
