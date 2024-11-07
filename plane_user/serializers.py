@@ -1,40 +1,27 @@
-from .models import PlanePart
-
 from rest_framework import serializers
-from .models import Cart, CartItem, ReadyKit, SelectedParts
+from .models import Cart, CartItem, SelectedParts, Component, Plane
 
-
-class PlanePartSerializer(serializers.ModelSerializer):
+class ComponentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PlanePart
-        fields = ['id', 'name', 'description', 'quantity_in_stock']
+        model = Component
+        fields = ['id', 'name', 'description', 'stock', 'price', 'category']
 
 
 class SelectedPartsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SelectedParts
-        fields = ['part', 'quantity']
+    part = ComponentSerializer(read_only=True)
 
-
-class ReadyKitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReadyKit
-        fields = ['id', 'name', 'description', 'price']
-
-
-class SelectedPartsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SelectedParts
         fields = ['id', 'part', 'quantity']
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    ready_kit = ReadyKitSerializer(read_only=True)
+    component = ComponentSerializer(read_only=True)
     selected_part = SelectedPartsSerializer(read_only=True)
 
     class Meta:
         model = CartItem
-        fields = ['id', 'ready_kit', 'selected_part', 'quantity']
+        fields = ['id', 'component', 'selected_part', 'quantity']
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -43,3 +30,9 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'user', 'items']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plane
+        fields = ['id', 'name', 'comment']  # Убедитесь, что поле 'comment' существует в модели Plane

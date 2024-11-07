@@ -115,12 +115,11 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'price', 'date_publication', "lessons"]
 
 
-
-
 class EducationalMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = EducationalMaterial
         fields = ['id', 'name', 'number_educational', 'content', 'file']
+
 
 class LessonSerializer(serializers.ModelSerializer):
     materials = EducationalMaterialSerializer(many=True, read_only=True)
@@ -130,9 +129,9 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'content', 'video_url', 'date_publication', 'materials']
 
 
-
 class PlaneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plane
         fields = ['id', 'name', 'photo', 'description', 'text', 'date_publications', 'plan', 'plane_type',
                   'complexity_level', 'download_link', 'price']  # Добавлено поле price
+

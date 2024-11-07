@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from rest_framework.views import APIView
 
-from .models import Country, Region, District, CityVillage, Course, Lesson, EducationalMaterial
+from .models import Country, Region, District, CityVillage, Course, Lesson, EducationalMaterial, CartItem
 
 from rest_framework import status
 from .serializers import PlaneSerializer, TutorialSerializer, RegisterSerializer, CountrySerializer, RegionSerializer, \

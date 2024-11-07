@@ -144,19 +144,6 @@ class CartItem(models.Model):
         return f'{self.plane.name} in cart of {self.user.username}'
 
 
-class CommentSerializer:
-    class Meta:
-        model = Plane
-        fields = ['comment']
-
-
-class RatingSerializer:
-    class Meta:
-        model = Plane
-        fields = ['rating']
-
-
-
 
 'напомнить Андрею заехать в Вайлберес и спросить про платежку линки дыня  ,бинарный код =>  '
 
