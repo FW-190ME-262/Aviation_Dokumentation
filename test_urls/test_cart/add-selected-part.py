@@ -1,7 +1,6 @@
-
 import requests
 
-part_id = 1  # ID of the selected part
+part_id = 1
 url = f'http://127.0.0.1:8000/cart/add-selected-part/{part_id}/'
 headers = {
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMxMzM3Mzk5LCJpYXQiOjE3MzEzMzAxOTksImp0aSI6IjQzMzhkMmNlM2Y2YTQ4MTU4NmFmYWU3NWRhZGVhNGNlIiwidXNlcl9pZCI6MX0.Idxo80MO1Vd2TVeOZxA1XAr0CVgqX8S-0100GQezkE8"
@@ -9,8 +8,8 @@ headers = {
 
 response = requests.post(url, headers=headers)
 
-# Check status code
-print("Status Code:", response.status_code)
+
+print(response.status_code)
 
 if response.status_code == 201:
     try:

@@ -1,4 +1,3 @@
-# select_parts_request.py
 import requests
 
 url = 'http://127.0.0.1:8000/parts/select/'

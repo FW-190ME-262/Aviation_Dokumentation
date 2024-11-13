@@ -14,7 +14,8 @@ class AddSelectedPartsToCartView(APIView):
     def post(self, request, part_id):
         cart, created = Cart.objects.get_or_create(user=request.user)
         selected_part = get_object_or_404(SelectedParts, id=part_id)
-        CartItem.objects.create(cart=cart, selected_part=selected_part, quantity=1)
+        # Изменим 'selected_part' на 'component' для правильного создания CartItem
+        CartItem.objects.create(cart=cart, component=selected_part.part, quantity=1)
         return Response({"message": "Selected part added to cart"}, status=status.HTTP_201_CREATED)
 
 

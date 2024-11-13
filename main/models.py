@@ -50,14 +50,6 @@ class Profile(models.Model):
                                      blank=True)  # Курсы, на которые записан пользователь
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=1000.00)  # Баланс пользователя
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['country', 'region', 'district', 'city_village'],
-                name='unique_location'
-            )
-        ]
-
     def __str__(self):
         return f"{self.user.username} - {self.city_village.name}, {self.street}"
 

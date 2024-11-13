@@ -1,20 +1,21 @@
 from rest_framework import serializers
 from .models import Cart, CartItem, SelectedParts, Component, Plane
 
+
 # Сериализатор для компонента самолета (деталь, запчасть)
 class ComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Component
-        fields = ['id', 'name', 'description', 'stock', 'price', 'category']  # Включает ID, название, описание, запас, цену и категорию компонента
+        fields = ['id', 'name', 'description', 'stock', 'price', 'category']
 
 
 # Сериализатор для выбранных пользователем комплектующих
 class SelectedPartsSerializer(serializers.ModelSerializer):
-    part = ComponentSerializer(read_only=True)  # Вложенный сериализатор для отображения данных о компоненте
+    part = serializers.PrimaryKeyRelatedField(queryset=Component.objects.all())  # Указываем компонент как ForeignKey
 
     class Meta:
         model = SelectedParts
-        fields = ['id', 'part', 'quantity']  # Включает ID, сам компонент и количество выбранных единиц
+        fields = ['id', 'part', 'quantity']
 
 
 # Сериализатор для элемента корзины (каждая позиция в корзине)
@@ -24,7 +25,8 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ['id', 'component', 'selected_part', 'quantity']  # ID элемента корзины, компонент, выбранная часть и количество
+        fields = ['id', 'component', 'selected_part',
+                  'quantity']  # ID элемента корзины, компонент, выбранная часть и количество
 
 
 # Сериализатор для корзины пользователя
@@ -40,4 +42,5 @@ class CartSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plane
-        fields = ['id', 'name', 'comment']  # Включает ID самолета, его имя и комментарий; убедитесь, что поле 'comment' добавлено в модель Plane
+        fields = ['id', 'name',
+                  'comment']  # Включает ID самолета, его имя и комментарий; убедитесь, что поле 'comment' добавлено в модель Plane
