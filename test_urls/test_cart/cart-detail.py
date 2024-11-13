@@ -116,9 +116,9 @@ if __name__ == "__main__":
         test_view_cart()
 
         # Тест на добавление части в корзину (здесь 1 — это ID части, которую добавляем)
-        test_add_selected_part_to_cart(0)
+        test_add_selected_part_to_cart()
 
         # Тест на удаление элемента из корзины (здесь 1 — это ID элемента в корзине, который удаляем)
-        test_remove_cart_item(5)
+        test_remove_cart_item(1)
     else:
         print("Не удалось выполнить тесты из-за отсутствия токена.")
